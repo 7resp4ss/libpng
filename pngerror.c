@@ -340,22 +340,17 @@ png_default_warning(png_structp png_ptr, png_const_charp warning_message)
      if ((offset > 1) && (offset < 15))
      {
        warning_number[offset + 1] = '\0';
-       fprintf(stderr, "libpng warning no. %s: %s",
-          warning_number, warning_message + offset);
-       fprintf(stderr, PNG_STRING_NEWLINE);
+       
      }
      else
      {
-       fprintf(stderr, "libpng warning: %s",
-          warning_message);
-       fprintf(stderr, PNG_STRING_NEWLINE);
+       
      }
    }
    else
 #  endif
    {
-     fprintf(stderr, "libpng warning: %s", warning_message);
-     fprintf(stderr, PNG_STRING_NEWLINE);
+     
    }
 #else
    PNG_UNUSED(warning_message) /* Make compiler happy */
