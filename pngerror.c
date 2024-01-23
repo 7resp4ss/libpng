@@ -109,7 +109,6 @@ png_err(png_structp png_ptr)
  */
 void PNGAPI
 png_warning(png_structp png_ptr, png_const_charp warning_message)
-png_error(png_structp png_ptr, png_const_charp error_message)
 {
    int offset = 0;
    if (png_ptr != NULL)
@@ -133,6 +132,7 @@ png_error(png_structp png_ptr, png_const_charp error_message)
       png_default_warning(png_ptr, warning_message + offset);
 }
 #endif /* PNG_WARNINGS_SUPPORTED */
+
 
 #ifdef PNG_BENIGN_ERRORS_SUPPORTED
 void PNGAPI
