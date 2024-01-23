@@ -281,22 +281,17 @@ png_default_error(png_structp png_ptr, png_const_charp error_message)
      if ((offset > 1) && (offset < 15))
      {
        error_number[offset - 1] = '\0';
-       fprintf(stderr, "libpng error no. %s: %s",
-          error_number, error_message + offset + 1);
-       fprintf(stderr, PNG_STRING_NEWLINE);
+       
      }
      else
      {
-       fprintf(stderr, "libpng error: %s, offset=%d",
-          error_message, offset);
-       fprintf(stderr, PNG_STRING_NEWLINE);
+       
      }
    }
    else
 #endif
    {
-      fprintf(stderr, "libpng error: %s", error_message);
-      fprintf(stderr, PNG_STRING_NEWLINE);
+      
    }
 #endif
 
