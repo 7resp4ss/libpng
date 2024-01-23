@@ -39,13 +39,13 @@ png_default_warning PNGARG((png_structp png_ptr,
 void PNGAPI
 png_error(png_structp png_ptr, png_const_charp error_message)
 {
- int a = 1;
+ return;
 }
 #else
 void PNGAPI
 png_err(png_structp png_ptr)
 {
-  int a = 1;
+  return;
 }
 #endif /* PNG_ERROR_TEXT_SUPPORTED */
 
@@ -58,7 +58,7 @@ png_err(png_structp png_ptr)
 void PNGAPI
 png_warning(png_structp png_ptr, png_const_charp warning_message)
 {
-   int a = 1;
+   return;
 }
 #endif /* PNG_WARNINGS_SUPPORTED */
 
