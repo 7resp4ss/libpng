@@ -39,13 +39,65 @@ png_default_warning PNGARG((png_structp png_ptr,
 void PNGAPI
 png_error(png_structp png_ptr, png_const_charp error_message)
 {
- return;
+#ifdef PNG_ERROR_NUMBERS_SUPPORTED
+   char msg[16];
+   if (png_ptr != NULL)
+   {
+     if (png_ptr->flags&
+       (PNG_FLAG_STRIP_ERROR_NUMBERS|PNG_FLAG_STRIP_ERROR_TEXT))
+     {
+       if (*error_message == PNG_LITERAL_SHARP)
+       {
+           /* Strip "#nnnn " from beginning of error message. */
+           int offset;
+           for (offset = 1; offset<15; offset++)
+              if (error_message[offset] == ' ')
+                  break;
+           if (png_ptr->flags&PNG_FLAG_STRIP_ERROR_TEXT)
+           {
+              int i;
+              for (i = 0; i < offset - 1; i++)
+                 msg[i] = error_message[i + 1];
+              msg[i - 1] = '\0';
+              error_message = msg;
+           }
+           else
+              error_message += offset;
+       }
+       else
+       {
+           if (png_ptr->flags&PNG_FLAG_STRIP_ERROR_TEXT)
+           {
+              msg[0] = '0';
+              msg[1] = '\0';
+              error_message = msg;
+           }
+       }
+     }
+   }
+#endif
+   if (png_ptr != NULL && png_ptr->error_fn != NULL)
+      (*(png_ptr->error_fn))(png_ptr, error_message);
+
+   /* If the custom handler doesn't exist, or if it returns,
+      use the default handler, which will not return. */
+   png_default_error(png_ptr, error_message);
 }
 #else
 void PNGAPI
 png_err(png_structp png_ptr)
 {
-  return;
+   /* Prior to 1.4.8 the error_fn received a NULL pointer, expressed
+    * erroneously as '\0', instead of the empty string "".  This was
+    * apparently an error, introduced in libpng-1.2.20, and png_default_error
+    * will crash in this case.
+    */
+   if (png_ptr != NULL && png_ptr->error_fn != NULL)
+      (*(png_ptr->error_fn))(png_ptr, "");
+
+   /* If the custom handler doesn't exist, or if it returns,
+      use the default handler, which will not return. */
+   png_default_error(png_ptr, "");
 }
 #endif /* PNG_ERROR_TEXT_SUPPORTED */
 
@@ -57,8 +109,28 @@ png_err(png_structp png_ptr)
  */
 void PNGAPI
 png_warning(png_structp png_ptr, png_const_charp warning_message)
+png_error(png_structp png_ptr, png_const_charp error_message)
 {
-   return;
+   int offset = 0;
+   if (png_ptr != NULL)
+   {
+#ifdef PNG_ERROR_NUMBERS_SUPPORTED
+   if (png_ptr->flags&
+     (PNG_FLAG_STRIP_ERROR_NUMBERS|PNG_FLAG_STRIP_ERROR_TEXT))
+#endif
+     {
+       if (*warning_message == PNG_LITERAL_SHARP)
+       {
+           for (offset = 1; offset < 15; offset++)
+              if (warning_message[offset] == ' ')
+                  break;
+       }
+     }
+   }
+   if (png_ptr != NULL && png_ptr->warning_fn != NULL)
+      (*(png_ptr->warning_fn))(png_ptr, warning_message + offset);
+   else
+      png_default_warning(png_ptr, warning_message + offset);
 }
 #endif /* PNG_WARNINGS_SUPPORTED */
 
