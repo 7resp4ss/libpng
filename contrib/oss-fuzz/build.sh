@@ -34,7 +34,7 @@ mv scripts/pnglibconf.dfa.temp scripts/pnglibconf.dfa
 autoreconf -f -i
 ./configure --with-libpng-prefix=OSS_FUZZ_
 make -j$(nproc) clean
-make -j$(nproc) libpng16.la
+make -j$(nproc) libpng14.la
 
 # build libpng_read_fuzzer.
 $CXX $CXXFLAGS -std=c++11 -I. \
